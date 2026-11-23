@@ -119,7 +119,7 @@ export class View {
     this.camera.aspect = aspect;
     this.camera.fov = fov;
     this.camera.updateProjectionMatrix();
-    const z = -0.92 * Math.max(1, 1.25 / camAspect) * Math.tan((54 * Math.PI) / 360) / Math.tan((fov * Math.PI) / 360);
+    const z = -1.14 * Math.max(1, 1.25 / camAspect) * Math.tan((54 * Math.PI) / 360) / Math.tan((fov * Math.PI) / 360);
     for (const [h, sign] of [
       [this.right, 1],
       [this.left, -1],
@@ -128,10 +128,10 @@ export class View {
         k = main ? 0.72 : paired ? 0.67 : 0.12,
         shift = main ? p.inward : paired ? p.inward * 0.76 : p.support * 0.095;
       h.mount.position.set(
-        sign * ((main ? 0.36 : 0.31) - shift * 0.62) +
+        sign * ((main ? 0.43 : 0.54) - shift * 0.62) +
           this.swayX +
           Math.sin(this.phase) * this.bob * 0.019,
-        (main ? -0.48 : paired ? -0.49 : -0.55) +
+        (main ? -0.35 : paired ? -0.37 : -0.46) +
           p.lift * k +
           breathing +
           Math.cos(this.phase * 2) * this.bob * 0.014 +
@@ -147,7 +147,7 @@ export class View {
           (main || paired ? 0 : -.51) + loc.pitch +
           p.tilt * k +
           T.MathUtils.clamp(vY * 0.014, -0.14, 0.12),
-        sign * (main ? -0.57 : 0.58) + p.turn * k * sign * 0.65,
+        sign * (main ? -0.9 : 0.64) + p.turn * k * sign * 0.65,
         sign * (-0.21 + p.roll * k * 0.7 - loc.bank - this.lean * 0.2) +
           (main ? 0 : p.support * 0.26),
       );
