@@ -54,6 +54,12 @@ const { mkdirSync } = require("node:fs");
         );
         await page.keyboard.up("Space");
         await page.keyboard.up("w");
+        await page.keyboard.press("Digit3");
+        await page.waitForFunction(
+          () => document.querySelector("#name").textContent === "M9 Bayonet",
+        );
+        await page.waitForTimeout(1800);
+        await page.screenshot({ path: "captures/m9-grip.png" });
         await page.keyboard.press("Digit2");
         await page.waitForFunction(
           () => document.querySelector("#name").textContent === "Karambit",

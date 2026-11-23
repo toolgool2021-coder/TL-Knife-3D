@@ -1,190 +1,171 @@
 import * as T from "./vendor/three.js";
 import { group, mesh, mat } from "./models.js";
-const leather = mat("#30363a", 0.79),
-  suede = mat("#675e4b", 0.94),
-  shell = mat("#242b2c", 0.43),
-  cloth = mat("#575e55", 0.95),
-  thread = mat("#b5a58a", 0.83);
-function fabric(material) {
-  const canvas = document.createElement("canvas");
-  canvas.width = canvas.height = 64;
-  const ctx = canvas.getContext("2d");
-  ctx.fillStyle = "#aaa";
-  ctx.fillRect(0, 0, 64, 64);
-  for (let y = 0; y < 64; y += 3)
-    for (let x = 0; x < 64; x += 4) {
-      ctx.fillStyle = (x + y) % 2 ? "#666" : "#ccc";
-      ctx.fillRect(x + (y % 2), y, 2, 1);
-    }
-  const tex = new T.CanvasTexture(canvas);
-  tex.wrapS = tex.wrapT = T.RepeatWrapping;
-  tex.repeat.set(3, 3);
-  material.bumpMap = tex;
-  material.bumpScale = 0.002;
+
+const url = (name) => new URL("./assets/" + name, import.meta.url);
+const [data, bytes] = await Promise.all([
+  fetch(url("glove.json")).then((r) => r.json()),
+  fetch(url("glove.bin")).then((r) => r.arrayBuffer()),
+]);
+const rest = data.joints.map((v) => new T.Vector3(...v));
+const geometry = new T.BufferGeometry();
+let offset = 0;
+function attribute(name, ArrayType, width, count = data.vertices) {
+  const buffer = new ArrayType(bytes, offset, count * width);
+  offset += buffer.byteLength;
+  const attr = new T.BufferAttribute(buffer, width);
+  if (name) geometry.setAttribute(name, attr);
+  else geometry.setIndex(attr);
 }
-fabric(leather);
-fabric(cloth);
-// Elliptical cross sections follow the local tangent, including the bent fingertips.
-// Neighbouring joints share vertices through skin weights.
-function loft(parent, rows, m, bones = null) {
-  const pos = [],
+attribute("position", Float32Array, 3);
+attribute("normal", Float32Array, 3);
+attribute("uv", Float32Array, 2);
+attribute("skinIndex", Uint8Array, 4);
+attribute("skinWeight", Float32Array, 4);
+attribute(null, Uint16Array, 1, data.triangles * 3);
+
+function textile() {
+  const c = document.createElement("canvas");
+  c.width = c.height = 256;
+  const ctx = c.getContext("2d");
+  const pixels = ctx.createImageData(256, 256);
+  for (let y = 0; y < 256; y++)
+    for (let x = 0; x < 256; x++) {
+      const weave = (((x + y) >> 1) % 3 === 0 ? 18 : 0) + ((x ^ y) & 3) * 3;
+      pixels.data.set(
+        [172 + weave, 172 + weave, 172 + weave, 255],
+        (y * 256 + x) * 4,
+      );
+    }
+  ctx.putImageData(pixels, 0, 0);
+  const map = new T.CanvasTexture(c);
+  map.wrapS = map.wrapT = T.RepeatWrapping;
+  map.repeat.set(3, 3);
+  map.anisotropy = 4;
+  return map;
+}
+const weave = textile(),
+  glove = mat("#555a53", 0.88, 0.02);
+glove.map = weave;
+glove.bumpMap = weave;
+glove.bumpScale = 0.0012;
+const patch = new T.Color("#575f5a"),
+  palmColor = new T.Color("#252c2c"),
+  colors = [];
+for (let i = 0; i < data.vertices; i++) {
+  const z = geometry.attributes.normal.getZ(i),
+    y = geometry.attributes.position.getY(i);
+  const blend =
+    T.MathUtils.smoothstep(z, -0.2, 0.65) *
+    T.MathUtils.smoothstep(y, -0.15, -0.08);
+  colors.push(...palmColor.clone().lerp(patch, blend).toArray());
+}
+geometry.setAttribute("color", new T.Float32BufferAttribute(colors, 3));
+glove.color.set("#ddddda");
+glove.vertexColors = true;
+
+const canvas = mat("#555d54", 0.96),
+  cuff = mat("#262f2c", 0.9);
+canvas.map = weave;
+canvas.bumpMap = weave;
+canvas.bumpScale = 0.003;
+function sleeve(parent) {
+  const sections = [
+    [-0.57, -0.8, 0.56, 0.19, 0.18],
+    [-0.35, -0.54, 0.36, 0.155, 0.14],
+    [-0.21, -0.38, 0.23, 0.141, 0.122],
+    [-0.16, -0.32, 0.17, 0.15, 0.129],
+    [-0.12, -0.285, 0.14, 0.124, 0.108],
+    [-0.085, -0.245, 0.105, 0.139, 0.116],
+    [-0.057, -0.218, 0.084, 0.13, 0.107],
+    [-0.03, -0.195, 0.064, 0.107, 0.088],
+    [0.008, -0.149, 0.033, 0.101, 0.078],
+  ];
+  const p = [],
     uv = [],
-    ix = [],
-    weights = [],
-    skin = [],
-    N = 16;
-  rows.forEach(([x, y, z, rx, rz, j = 0, w = 0], i) => {
-    const a = rows[Math.max(i - 1, 0)],
-      b = rows[Math.min(i + 1, rows.length - 1)],
-      dy = b[1] - a[1],
-      dz = b[2] - a[2],
-      len = Math.hypot(dy, dz) || 1;
-    for (let k = 0; k <= N; k++) {
-      const th = (k * 2 * Math.PI) / N,
-        c = Math.cos(th),
-        s = Math.sin(th);
-      pos.push(x + rx * c, y - (rz * s * dz) / len, z + (rz * s * dy) / len);
-      uv.push(k / N, i / (rows.length - 1));
-      skin.push(j, Math.min(j + 1, (bones?.length || 1) - 1), 0, 0);
-      weights.push(1 - w, w, 0, 0);
-      if (i && k) {
-        const v = i * (N + 1) + k;
-        ix.push(v - N - 2, v, v - 1, v - N - 2, v - N - 1, v);
+    idx = [],
+    geo = new T.BufferGeometry(),
+    n = 32;
+  sections.forEach(([x, y, z, w, h], i) => {
+    for (let j = 0; j <= n; j++) {
+      const a = (2 * Math.PI * j) / n,
+        fold = 1 + 0.035 * Math.cos(5 * a + i * 0.65);
+      p.push(
+        x + w * Math.cos(a) * fold,
+        y + 0.45 * h * Math.sin(a),
+        z + h * Math.sin(a) * fold,
+      );
+      uv.push(j / n, i * 0.4);
+      if (i && j) {
+        const v = i * (n + 1) + j;
+        idx.push(v - n - 2, v - 1, v, v - n - 2, v, v - n - 1);
       }
     }
+    if (i) geo.addGroup((i - 1) * n * 6, n * 6, i >= 7 ? 1 : 0);
   });
-  const geo = new T.BufferGeometry();
-  geo.setAttribute("position", new T.Float32BufferAttribute(pos, 3));
+  geo.setIndex(idx);
+  geo.setAttribute("position", new T.Float32BufferAttribute(p, 3));
   geo.setAttribute("uv", new T.Float32BufferAttribute(uv, 2));
-  geo.setIndex(ix);
   geo.computeVertexNormals();
-  m.side = T.DoubleSide;
-  if (!bones) return mesh(parent, geo, m);
-  geo.setAttribute("skinIndex", new T.Uint16BufferAttribute(skin, 4));
-  geo.setAttribute("skinWeight", new T.Float32BufferAttribute(weights, 4));
-  const o = new T.SkinnedMesh(geo, m);
-  o.add(bones[0]);
-  parent.add(o);
-  o.updateMatrixWorld(true);
-  o.bind(new T.Skeleton(bones));
-  o.frustumCulled = false;
-  return o;
+  mesh(parent, geo, [canvas, cuff]);
 }
-function seam(parent, pts) {
-  const c = new T.CatmullRomCurve3(pts.map((p) => new T.Vector3(...p)));
-  mesh(parent, new T.TubeGeometry(c, 14, 0.0022, 5, false), thread);
-}
+const chains = [
+  [6, 7, 8, 9],
+  [11, 12, 13, 14],
+  [16, 17, 18, 19],
+  [21, 22, 23, 24],
+  [1, 2, 3, 4],
+];
 export function hand(scene, side) {
   const mount = group(scene),
-    wrist = group(mount);
-  wrist.scale.x = side;
-  const socket = group(wrist, 0, 0.12, -0.043);
-  loft(
-    wrist,
-    [
-      [-0.55, -0.77, 0.52, 0.19, 0.15],
-      [-0.38, -0.56, 0.37, 0.17, 0.14],
-      [-0.22, -0.4, 0.25, 0.148, 0.12],
-      [-0.16, -0.33, 0.2, 0.16, 0.13],
-      [-0.12, -0.28, 0.15, 0.14, 0.115],
-      [-0.07, -0.23, 0.1, 0.145, 0.109],
-      [-0.035, -0.17, 0.06, 0.115, 0.091],
-    ],
-    cloth,
-  );
-  loft(
-    wrist,
-    [
-      [-0.065, -0.235, 0.1, 0.124, 0.102],
-      [-0.048, -0.215, 0.08, 0.14, 0.103],
-      [-0.018, -0.145, 0.037, 0.13, 0.097],
-      [0, -0.13, 0.03, 0.115, 0.082],
-    ],
-    shell,
-  );
-  const palm = group(wrist);
-  loft(
-    palm,
-    [
-      [0, -0.168, 0.04, 0.104, 0.071],
-      [0.006, -0.116, 0.018, 0.119, 0.075],
-      [0.006, -0.025, 0, 0.15, 0.082],
-      [0.004, 0.046, 0.001, 0.172, 0.077],
-      [0, 0.113, 0.003, 0.164, 0.064],
-      [0, 0.137, 0.005, 0.14, 0.045],
-    ],
-    leather,
-  );
-  seam(palm, [
-    [-0.092, -0.12, 0.073],
-    [-0.13, -0.015, 0.055],
-    [-0.135, 0.065, 0.053],
-    [-0.09, 0.1, 0.063],
-  ]);
-  seam(palm, [
-    [0.08, -0.12, 0.074],
-    [0.115, -0.025, 0.065],
-    [0.132, 0.057, 0.057],
-  ]);
-  const fingers = [];
-  for (let i = 0; i < 5; i++) {
-    const thumb = i === 4,
-      x = thumb ? 0.138 : 0.119 - i * 0.078,
-      L = thumb ? 0.87 : [1, 1.07, 1, 0.82][i];
-    const path = thumb
-      ? [
-          [x, -0.045, 0.017],
-          [0.183, 0.016, 0.004],
-          [0.182, 0.075, -0.055],
-          [0.135, 0.103, -0.086],
-          [0.09, 0.105, -0.085],
-        ]
-      : [
-          [x, 0.06, 0.023],
-          [x, 0.123, 0.043],
-          [x, 0.174 * L, 0.004],
-          [x, 0.168 * L, -0.066],
-          [x, 0.12 * L, -0.103],
-          [x, 0.087 * L, -0.085],
-        ];
-    const bones = [new T.Bone(), new T.Bone(), new T.Bone()];
-    const breaks = thumb ? [0, 1, 2] : [0, 2, 3];
-    bones.forEach((bone, j) => {
-      bone.position.fromArray(path[breaks[j]]);
-      if (j) {
-        bone.position.sub(new T.Vector3(...path[breaks[j - 1]]));
-        bones[j - 1].add(bone);
-      }
-    });
-    const rows = path.map(([px, y, z], k) => {
-      const j = k >= breaks[2] ? 2 : k >= breaks[1] ? 1 : 0;
-      const radius = (thumb ? 0.045 : 0.038) * L * (1 - k * 0.056);
-      return [
-        px,
-        y,
-        z,
-        k === path.length - 1 ? 0.009 : radius,
-        k === path.length - 1 ? 0.009 : radius * 0.91,
-        j,
-        k === 1 ? 0.27 : 0,
-      ];
-    });
-    loft(palm, rows, i === 4 ? suede : leather, bones);
-    fingers.push(bones);
-    if (!thumb) {
-      const o = mesh(palm, new T.SphereGeometry(1, 12, 8), shell);
-      o.position.set(x, 0.083, 0.065);
-      o.scale.set(0.034, 0.033, 0.012);
+    wrist = group(mount),
+    palm = group(wrist),
+    socket = group(wrist, 0, 0.123, -0.087);
+  sleeve(wrist);
+  const bones = rest.map(() => new T.Bone());
+  for (let i = 0; i < bones.length; i++) {
+    const parent = i === 0 ? -1 : [1, 5, 10, 15, 20].includes(i) ? 0 : i - 1;
+    bones[i].position.copy(rest[i]);
+    if (parent !== -1) {
+      bones[i].position.sub(rest[parent]);
+      bones[parent].add(bones[i]);
     }
   }
-  const patch = mesh(palm, new T.SphereGeometry(1, 20, 12), suede);
-  patch.position.set(-0.012, -0.026, 0.078);
-  patch.scale.set(0.091, 0.06, 0.012);
-  for (const y of [-0.044, -0.025, -0.006])
-    seam(palm, [
-      [-0.057, y, 0.087],
-      [-0.012, y + 0.005, 0.091],
-      [0.041, y, 0.086],
-    ]);
-  return { mount, wrist, palm, socket, fingers };
+  const skin = new T.SkinnedMesh(geometry, glove);
+  skin.add(bones[0]);
+  skin.bind(new T.Skeleton(bones));
+  skin.frustumCulled = false;
+  palm.add(skin);
+  wrist.scale.x = side;
+  const rotations = chains.map((chain, finger) => {
+    let previous = new T.Quaternion();
+    return chain.slice(0, -1).map((id, j) => {
+      const natural = rest[chain[j + 1]].clone().sub(rest[id]).normalize();
+      const targets =
+        finger === 4
+          ? [
+              [0.65, 0.6, -0.38],
+              [-0.32, 0.84, -0.38],
+              [-0.92, 0.24, -0.1],
+            ]
+          : [
+              [0.04, 0.49, -0.87],
+              [0.03, -0.94, -0.34],
+              [0, -0.8, 0.6],
+            ];
+      const target = new T.Vector3(...targets[j]).normalize();
+      const worldQ = new T.Quaternion().setFromUnitVectors(natural, target);
+      const local = previous.clone().invert().multiply(worldQ);
+      previous = worldQ;
+      return { joint: bones[id], local };
+    });
+  });
+  function pose(open) {
+    for (const chain of rotations)
+      for (const { joint, local } of chain)
+        joint.quaternion
+          .identity()
+          .slerp(local, 1 - T.MathUtils.clamp(open, 0, 1) * 0.82);
+  }
+  pose(0);
+  return { mount, wrist, palm, socket, pose };
 }

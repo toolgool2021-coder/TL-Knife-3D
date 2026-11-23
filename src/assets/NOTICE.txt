@@ -1,0 +1,3 @@
+Glove mesh adapted from generic-hand/right.glb in @webxr-input-profiles/assets 1.0.20 (Immersive Web Working Group).
+https://github.com/immersive-web/webxr-input-profiles
+Original license in hand-LICENSE.txt. Adaptations include axis conversion, finger parenting, grip posing and materials.

@@ -130,7 +130,7 @@ export class View {
         sign * ((main ? 0.56 : 0.51) - shift) +
           this.swayX +
           Math.sin(this.phase) * this.bob * 0.019,
-        (main ? -0.34 : paired ? -0.36 : -0.44) +
+        (main ? -0.31 : paired ? -0.36 : -0.43) +
           p.lift * k +
           breathing +
           Math.cos(this.phase * 2) * this.bob * 0.014 +
@@ -146,24 +146,11 @@ export class View {
           loc.pitch +
           p.tilt * k +
           T.MathUtils.clamp(vY * 0.014, -0.14, 0.12),
-        sign * (main ? -0.42 : 0.49) + p.turn * k * sign,
-        sign * (-0.14 + p.roll * k - loc.bank - this.lean * 0.15) +
+        sign * (main ? -0.98 : 0.88) + p.turn * k * sign,
+        sign * (-0.32 + p.roll * k - loc.bank - this.lean * 0.15) +
           (main ? 0 : p.support * 0.26),
       );
-      for (let i = 0; i < 5; i++)
-        for (let j = 1; j < 3; j++) {
-          const open = main
-            ? p.open
-            : paired
-              ? p.open * 0.84
-              : 0.56 + p.support * 0.23;
-          h.fingers[i][j].rotation.x =
-            (i === 4 ? -0.32 : 0.67) *
-            open *
-            (i === 0 && ["talon", "ring", "skeleton"].includes(this.data.type)
-              ? 0.28
-              : 1);
-        }
+      h.pose(main ? p.open : paired ? p.open * 0.84 : 0.52 + p.support * 0.24);
     }
     const spin = p.spin,
       model = this.model,

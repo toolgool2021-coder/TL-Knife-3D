@@ -73,6 +73,118 @@ function blade(g, stations) {
   steel.side = edge.side = T.DoubleSide;
   mesh(g, flat, [steel, edge]);
 }
+function bayonetDisplay(body, pivot) {
+  const finish = mat("#646e70", 0.31, 0.82),
+    grind = mat("#b7c1c2", 0.24, 0.9);
+  const cheek = new T.Shape();
+  cheek.moveTo(0, 0.074);
+  cheek.lineTo(0.115, 0.074);
+  for (let i = 0; i < 11; i++) {
+    const x = 0.115 + i * 0.021;
+    cheek.lineTo(x + 0.005, 0.064);
+    cheek.lineTo(x + 0.014, 0.064);
+    cheek.lineTo(x + 0.019, 0.074);
+  }
+  cheek.lineTo(0.61, 0.074);
+  cheek.quadraticCurveTo(0.71, 0.036, 0.86, 0.012);
+  cheek.lineTo(0.65, -0.018);
+  cheek.lineTo(0.46, -0.032);
+  cheek.lineTo(0.093, -0.032);
+  cheek.lineTo(0.067, -0.061);
+  cheek.lineTo(0, -0.06);
+  cheek.closePath();
+  const slot = new T.Path();
+  slot.absellipse(0.49, 0.022, 0.047, 0.016, 0, 2 * Math.PI, true);
+  cheek.holes.push(slot);
+  const face = new T.ExtrudeGeometry(cheek, {
+    depth: 0.024,
+    bevelThickness: 0.0018,
+    bevelSize: 0.0016,
+    bevelSegments: 2,
+    curveSegments: 20,
+  });
+  face.translate(0, 0, -0.012);
+  mesh(pivot, face, finish);
+  // The lower grind is continuous; sawback notches only affect the spine.
+  const rails = [
+    [0.067, -0.061, -0.062],
+    [0.093, -0.032, -0.08],
+    [0.46, -0.032, -0.082],
+    [0.65, -0.018, -0.056],
+    [0.86, 0.012, 0.012],
+  ];
+  for (const side of [-1, 1]) {
+    const v = [],
+      index = [];
+    rails.forEach(([x, shoulder, edgeY], i) => {
+      v.push(x, shoulder, side * 0.013, x, edgeY, side * 0.0005);
+      if (i) {
+        const a = i * 2;
+        index.push(a - 2, a - 1, a, a, a - 1, a + 1);
+      }
+    });
+    const geo = new T.BufferGeometry();
+    geo.setAttribute("position", new T.Float32BufferAttribute(v, 3));
+    geo.setIndex(index);
+    geo.computeVertexNormals();
+    grind.side = T.DoubleSide;
+    mesh(pivot, geo, grind);
+  }
+  function turned(profile, material) {
+    const lathe = new T.LatheGeometry(
+      profile.map(([x, r]) => new T.Vector2(r, x)),
+      40,
+    );
+    const part = mesh(body, lathe, material);
+    part.rotation.z = -Math.PI / 2;
+    part.scale.x = 0.83;
+  }
+  const rubber = mat("#454e3e", 0.86, 0.01),
+    grip = [
+      [-0.29, 0.001],
+      [-0.29, 0.051],
+      [-0.278, 0.061],
+    ];
+  for (let i = 0; i < 7; i++) {
+    const x = -0.267 + i * 0.065,
+      r = 0.07 + 0.007 * Math.sin((i * Math.PI) / 6);
+    grip.push(
+      [x, r - 0.009],
+      [x + 0.007, r],
+      [x + 0.043, r],
+      [x + 0.05, r - 0.01],
+      [x + 0.063, r - 0.01],
+    );
+  }
+  grip.push([0.192, 0.065], [0.204, 0.058], [0.204, 0.001]);
+  turned(grip, rubber);
+  turned(
+    [
+      [-0.326, 0.001],
+      [-0.326, 0.054],
+      [-0.317, 0.067],
+      [-0.287, 0.067],
+      [-0.28, 0.054],
+    ],
+    hardware,
+  );
+  const guard = group(body, 0.222, 0, 0);
+  guard.rotation.y = Math.PI / 2;
+  const shape = [
+    [-0.057, -0.103],
+    [-0.046, -0.126],
+    [0.045, -0.126],
+    [0.057, -0.103],
+    [0.053, 0.122],
+    [0.049, 0.151],
+    [0.033, 0.171],
+    [0, 0.178],
+    [-0.034, 0.17],
+    [-0.051, 0.147],
+    [-0.055, 0.12],
+  ];
+  plate(guard, shape, 0.033, hardware, [[0, 0.121, 0.036]]);
+}
 export function weapon(parent, d) {
   const prop = group(parent),
     body = group(prop),
@@ -80,6 +192,10 @@ export function weapon(parent, d) {
     arms = [];
   const tint = mat(d.color, 0.46, 0.32),
     t = d.type;
+  if (t === "m9") {
+    bayonetDisplay(body, pivot);
+    return { prop, body, pivot, arms };
+  }
   blade(pivot, d.stations);
   if (t === "butterfly") {
     for (const side of [-1, 1]) {
@@ -146,19 +262,6 @@ export function weapon(parent, d) {
         [-0.24, -0.058],
         [-0.27, -0.079],
         [-0.31, -0.055],
-      ],
-      m9: [
-        [-0.31, 0.072],
-        [-0.23, 0.1],
-        [-0.15, 0.079],
-        [0.19, 0.081],
-        [0.25, 0.11],
-        [0.25, -0.09],
-        [0.12, -0.079],
-        [0.08, -0.058],
-        [-0.13, -0.081],
-        [-0.27, -0.098],
-        [-0.31, -0.067],
       ],
       stiletto: [
         [-0.31, 0.008],
@@ -311,9 +414,7 @@ export function weapon(parent, d) {
       rivet(body, -0.19, tail, 0.056);
       rivet(body, 0.19, 0.005, 0.056);
     }
-    if (
-      ["bayonet", "m9", "bowie", "classic", "stiletto", "huntsman"].includes(t)
-    ) {
+    if (["bayonet", "bowie", "classic", "stiletto", "huntsman"].includes(t)) {
       const span = t === "stiletto" ? 0.11 : t === "bowie" ? 0.19 : 0.145;
       plate(
         body,
@@ -326,10 +427,9 @@ export function weapon(parent, d) {
         0.09,
         hardware,
       );
-      if (t === "m9" || t === "bayonet")
-        ring(body, 0.233, 0.196, 0.052, hardware);
+      if (t === "bayonet") ring(body, 0.233, 0.196, 0.052, hardware);
     }
-    if (["m9", "bayonet", "ursus", "huntsman"].includes(t))
+    if (["bayonet", "ursus", "huntsman"].includes(t))
       for (let i = 0; i < 6; i++) {
         const x = -0.16 + i * 0.058;
         plate(
