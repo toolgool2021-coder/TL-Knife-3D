@@ -1,28 +1,11 @@
-# TL KNIFE 3D
+# TL Knife 3D
 
-An original Dust-inspired first-person 3D movement playground for the browser. Powered by Three.js.
+Браузерная FPS-песочница Toolgool. Коллекция из 16 оригинальных процедурных моделей, две ригованные перчатки и арена Dust. Three.js r160 включён в сборку. Лицензия движка находится в src/vendor/LICENSE.
 
-## Controls
+WASD отвечает за движение, мышь за обзор. Пробел можно удерживать для BHOP. Shift включает медленный шаг, Ctrl приседание, Caps Lock переключает бег. F запускает осмотр, Q трюк, I коллекцию. Колесо перебирает все ножи, клавиши 1-9 выбирают первые девять. Esc открывает паузу. В настройках можно изменить привязки и параметры камеры.
 
-- WASD: move
-- Mouse: look (click to lock pointer)
-- Space: jump / bunny hop (hold for repeated jumps)
-- Mouse movement in air: air strafe with A/D
-- F: inspect 3D view-model
-- Left click: animated slash (visual only)
-- Shift: slow walk
-- Ctrl: crouch
-- R: reset position and speed
-- Esc: pause
+На сенсорном экране двигайтесь левым джойстиком и поворачивайте камеру справа. Размер кнопок регулируется в меню.
 
-Touch devices: virtual joystick, drag to look, jump, inspect and duck buttons.
+## Запуск
 
-## Run
-
-Open [GitHub Pages](https://toolgool2021-coder.github.io/TL-Knife-3D/) after the Pages workflow has deployed, or run a local HTTP server in this directory. The game loads Three.js from jsDelivr and requires an internet connection.
-
-## Deployment
-
-GitHub Actions deploys the root index.html automatically on pushes to main using Pages. If the workflow requires authorization, open **Settings > Pages > Build and deployment** and select **GitHub Actions**, then rerun the workflow.
-
-This is an original simplified desert arena, not an official Counter-Strike or Dust II map.
+Выполните `npm run build` и `python -m http.server -d dist`. После push в main workflow pages.yml собирает статический сайт и развёртывает dist через GitHub Pages.
