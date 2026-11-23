@@ -4,7 +4,14 @@ import {arena} from './world.js';
 import {Player} from './player.js';
 import {View} from './view.js';
 import {$,settings,bindings,mobile,menu,setupUI,choose} from './ui.js';
-const renderer=new T.WebGLRenderer({antialias:true,powerPreference:'high-performance'});renderer.autoClear=false;renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=1.16;document.body.prepend(renderer.domElement);
+function startRenderer(){
+ try{return new T.WebGLRenderer({antialias:true,powerPreference:'high-performance'})}
+ catch(error){$('hint').textContent='Для арены нужен WebGL. Включи аппаратное ускорение в браузере и обнови страницу.';$('play').disabled=true;document.querySelector('nav').hidden=true;return null}
+}
+const renderer=startRenderer();
+if(renderer)startGame(renderer);
+function startGame(renderer){
+renderer.autoClear=false;renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=1.16;document.body.prepend(renderer.domElement);
 const scene=new T.Scene();scene.background=new T.Color('#abcbd5');scene.fog=new T.FogExp2('#cfcebb',.009);
 const camera=new T.PerspectiveCamera(77,1,.06,420);camera.rotation.order='YXZ';scene.add(new T.HemisphereLight(0xfff4dc,0x877662,2));
 const sun=new T.DirectionalLight(0xffe4ba,2.65);sun.position.set(-48,85,33);sun.castShadow=true;Object.assign(sun.shadow.camera,{left:-100,right:100,top:100,bottom:-100});sun.shadow.bias=-.0003;scene.add(sun);
@@ -55,3 +62,5 @@ function loop(now){
  if(hud>=.25){$('fps').textContent=Math.round(frames/hud)+' FPS';frames=hud=0;$('speed').textContent=String(Math.round(speed*50)).padStart(3,'0');$('state').textContent=!player.ground?'AIR':down('duck')?'CROUCH':sprint?'SPRINT':'GROUND';$('timer').textContent=[Math.floor(clock/60),Math.floor(clock)%60].map(v=>String(v).padStart(2,'0')).join(':');radar()}
 }
 addEventListener('resize',configure);requestAnimationFrame(loop);
+
+}

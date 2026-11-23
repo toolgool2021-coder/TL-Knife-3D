@@ -25,6 +25,17 @@ jobs:
           enablement: true
       - name: Build site
         run: npm run build
+      - name: Test desktop and touch in Chromium
+        run: |
+          npm install --prefix "$RUNNER_TEMP/tl-browser" playwright@1.56.1
+          "$RUNNER_TEMP/tl-browser/node_modules/.bin/playwright" install chromium --with-deps
+          python3 -m http.server 8111 --directory dist > /tmp/tl-server.log 2>&1 &
+          NODE_PATH="$RUNNER_TEMP/tl-browser/node_modules" node tests/browser.cjs
+      - name: Save gameplay captures
+        uses: actions/upload-artifact@v4
+        with:
+          name: gameplay-captures
+          path: captures
       - name: Upload site
         uses: actions/upload-pages-artifact@v3
         with:
