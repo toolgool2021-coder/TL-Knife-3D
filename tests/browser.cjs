@@ -4,6 +4,7 @@ const { mkdirSync } = require('node:fs');
 
 (async () => {
   const browser = await chromium.launch({
+    channel: "chrome",
     args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--no-sandbox']
   });
   const errors = [];
