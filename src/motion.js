@@ -103,14 +103,13 @@ const scripts = {
   ],
 };
 function clip(name, words, duration) {
-  const frames = ["rest", ...words.split(" "), "rest"],
-    times = frames.map((_, i) => (duration * i) / (frames.length - 1));
+  const frames = ["rest", ...words.split(" "), "rest"];
+  const weights=frames.map((_,i)=>i===0?0:i===frames.length-1?1:i===1?.13:i===frames.length-2?.79:.13+(i-1)*(.66/(frames.length-3)));
+  const times=weights.map(v=>v*duration);
   const tracks = channels.map((c, j) => {
     const values = frames.map((p) => poses[p][j] || 0);
     // A complete revolution returns to the same orientation. Continue on that branch.
-    if (c === "spin")
-      for (let i = 1; i < values.length; i++)
-        if (values[i] === 0 && values[i - 1] < -5) values[i] = -Math.PI * 2;
+    if(c==="spin")for(let i=1;i<values.length;i++){const prev=values[i-1];if(values[i]===0&&prev< -3)values[i]=-Math.PI*2*Math.max(1,Math.round(-prev/(Math.PI*2)));else if(values[i]<0&&prev< -3)while(values[i]>prev+.5)values[i]-=Math.PI*2;}
     return new T.NumberKeyframeTrack(
       "." + c,
       times,
@@ -144,6 +143,7 @@ export class Animator {
       2.9,
     );
     this.clips.Slash = clip("Slash", "low cross", 0.52);
+    this.clips["Trick Alternate"] = clip("Trick Alternate",trick.split(" ").reverse().join(" "),2.3);
     this.idles = 0;
     this.time = 0;
     this.count = 0;
@@ -155,6 +155,7 @@ export class Animator {
       !this.action.getClip().name.startsWith("Idle")
     )
       return;
+    if(name==="Trick"){this.tricks=(this.tricks||0)+1;if(this.tricks%2===0)name="Trick Alternate"}
     if (name === "Inspect") {
       this.count++;
       if (this.count % 5 === 0) name = "Inspect Rare";
