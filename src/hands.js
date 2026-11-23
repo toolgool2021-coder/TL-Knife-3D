@@ -62,6 +62,31 @@ for (let i = 0; i < data.vertices; i++) {
 geometry.setAttribute("color", new T.Float32BufferAttribute(colors, 3));
 glove.color.set("#ddddda");
 glove.vertexColors = true;
+// The stitched panels use bind-pose coordinates, so their edges deform with the glove.
+glove.onBeforeCompile = (shader) => {
+  shader.vertexShader =
+    "varying vec3 glovePoint; varying float backFacing;\n" +
+    shader.vertexShader.replace(
+      "#include <begin_vertex>",
+      "#include <begin_vertex>\n glovePoint=position;backFacing=normal.z;",
+    );
+  shader.fragmentShader =
+    "varying vec3 glovePoint; varying float backFacing;\n" +
+    shader.fragmentShader.replace(
+      "#include <color_fragment>",
+      `#include <color_fragment>
+ vec2 panelPoint=glovePoint.xy;
+ float seam=panelPoint.y-(.045-.32*abs(panelPoint.x)+.009*cos(panelPoint.x*39.));
+ float back=smoothstep(-.1,.6,backFacing);
+ float reinforcement=smoothstep(-.002,.002,seam)*(1.-smoothstep(.18,.25,panelPoint.y));
+ diffuseColor.rgb*=mix(vec3(1.),vec3(.42,.49,.50),reinforcement*back);
+ float stitches=(1.-smoothstep(.0009,.0025,abs(seam+.004)))*smoothstep(-.18,.22,cos(panelPoint.x*780.));
+ diffuseColor.rgb+=vec3(.065,.058,.048)*stitches*back;
+ float strap=1.-smoothstep(.019,.024,abs(panelPoint.y+.115+.09*panelPoint.x));
+ diffuseColor.rgb*=1.-.53*strap;
+ `,
+    );
+};
 
 const canvas = mat("#555d54", 0.96),
   cuff = mat("#262f2c", 0.9);
@@ -159,12 +184,21 @@ export function hand(scene, side) {
       return { joint: bones[id], local };
     });
   });
-  function pose(open) {
-    for (const chain of rotations)
+  function pose(open, supporting = false) {
+    for (const [i, chain] of rotations.entries())
       for (const { joint, local } of chain)
         joint.quaternion
           .identity()
-          .slerp(local, 1 - T.MathUtils.clamp(open, 0, 1) * 0.82);
+          .slerp(
+            local,
+            1 -
+              T.MathUtils.clamp(
+                open + (supporting ? [0.17, 0.06, -0.04, -0.13, 0.39][i] : 0),
+                0,
+                1,
+              ) *
+                0.82,
+          );
   }
   pose(0);
   return { mount, wrist, palm, socket, pose };

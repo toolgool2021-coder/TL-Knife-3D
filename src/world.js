@@ -89,7 +89,7 @@ export function arena(scene) {
       box(x, h - 1, z, d, 2, w + 4, plaster);
     }
   }
-  box(0, -0.8, 0, 220, 1.6, 220, sand, false);
+  box(0, -0.825, 0, 220, 1.6, 220, sand, false);
   box(0, -0.35, 0, 175, 0.7, 175, stone, false);
   wall(0, -92, 186, 4, 20);
   wall(0, 92, 186, 4, 20);
@@ -187,7 +187,19 @@ export function arena(scene) {
         201 +
         (seed >>> 27) +
         (m === wood ? Math.sin((i % 128) * 0.65) * 14 : 0);
-      im.data.set([v, v, v, 255], 4 * i);
+      const x = i % 128,
+        y = Math.floor(i / 128);
+      const grain =
+        (Math.sin((x * Math.PI) / 32 + 1.3 * Math.sin((y * Math.PI) / 32)) +
+          Math.cos(((x + y) * Math.PI) / 16)) *
+        3;
+      const course = Math.floor(y / 32),
+        joint = Math.min(y % 32, (x + (course % 2) * 32) % 64);
+      const seams =
+        m === stone ? (joint < 1.2 ? -42 : joint < 2.5 ? -12 : 0) : 0;
+      const fleck = (m === plaster || m === sand) && seed >>> 24 < 15 ? -24 : 0;
+      const tone = v + grain + seams + fleck;
+      im.data.set([tone, tone - 2, tone - 4, 255], 4 * i);
     }
     g.putImageData(im, 0, 0);
     m.map = new THREE.CanvasTexture(c);

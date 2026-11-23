@@ -144,14 +144,14 @@ export class View {
       );
       h.mount.rotation.set(
         -0.12 +
-          loc.pitch +
+          (main || paired ? 0 : -.51) + loc.pitch +
           p.tilt * k +
           T.MathUtils.clamp(vY * 0.014, -0.14, 0.12),
         sign * (main ? -0.57 : 0.58) + p.turn * k * sign * 0.65,
         sign * (-0.21 + p.roll * k * 0.7 - loc.bank - this.lean * 0.2) +
           (main ? 0 : p.support * 0.26),
       );
-      h.pose(main ? Math.max(0,Math.min(0.8,p.open*.65)) : paired ? p.open * 0.55 : 0.75 + p.support * 0.08);
+      h.pose(main ? Math.max(0,Math.min(0.8,p.open*.65)) : paired ? p.open * 0.55 : 0.75 + p.support * 0.08,!main&&!paired);
     }
     const spin = p.spin,
       model = this.model,
