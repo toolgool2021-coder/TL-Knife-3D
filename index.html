@@ -1,14 +1,71 @@
 <!doctype html>
-<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#202420"><title>TL Knife 3D | Dust Arena</title><link rel="stylesheet" href="./src/style.css"></head>
-<body>
-<header><b>TL<span>/</span>KNIFE 3D</b><small>DUST ARENA</small></header>
-<div id="telemetry"><span id="fps">0 FPS</span><canvas id="radar" width="160" height="160"></canvas></div>
-<div id="dot"></div><div id="velocity"><strong id="speed">000</strong> u/s <small id="state"></small></div>
-<div id="loadout"><small id="finish"></small><b id="name"></b><time id="timer">00:00</time></div>
-<div id="touch" hidden><div id="stick"><i></i></div><div id="pad"><button data-act="run">Бег</button><button data-act="inspect">Осмотр</button><button data-act="jump">Прыжок</button><button data-act="duck">Присед</button><button data-act="trick">Трюк</button><button data-act="inventory">Ножи</button></div><button id="pauseTouch">Ⅱ</button></div>
-<div id="cover"><section id="panel"><nav><button data-tab="home">Арена</button><button data-tab="inventory">Коллекция</button><button data-tab="settings">Настройки</button></nav>
-<section id="home"><small>КАРТА / 01</small><h1>DUST<br><em>ARENA</em></h1><p>Выбери нож и попробуй его в движении.</p><button id="play" class="primary">На арену <b>↗</b></button><p id="hint"></p></section>
-<section id="inventory" hidden><h2>Коллекция</h2><div id="cards"></div></section>
-<section id="settings" hidden><h2>Настройки</h2><div id="options"></div><details><summary>Назначение клавиш</summary><div id="bindings"></div></details></section>
-<button id="resume" class="primary" hidden>Вернуться на арену ↗</button></section></div>
-<script type="module" src="./src/main.js"></script></body></html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#202420" />
+    <title>TL Knife 3D | Dust Arena</title>
+    <link rel="stylesheet" href="./src/style.css" />
+  </head>
+  <body>
+    <header><b>TL<span>/</span>KNIFE 3D</b><small>DUST ARENA</small></header>
+    <div id="telemetry">
+      <span id="fps">0 FPS</span
+      ><canvas id="radar" width="160" height="160"></canvas>
+    </div>
+    <div id="dot"></div>
+    <div id="velocity">
+      <strong id="speed">000</strong> u/s <small id="state"></small>
+    </div>
+    <div id="loadout">
+      <small id="finish"></small><b id="name"></b><time id="timer">00:00</time>
+    </div>
+    <div id="touch" hidden>
+      <div id="stick"><i></i></div>
+      <div id="pad">
+        <button data-act="run">Бег</button
+        ><button data-act="inspect">Осмотр</button
+        ><button data-act="jump">Прыжок</button
+        ><button data-act="duck">Присед</button
+        ><button data-act="trick">Трюк</button
+        ><button data-act="inventory">Ножи</button>
+      </div>
+      <button id="pauseTouch">Ⅱ</button>
+    </div>
+    <div id="cover">
+      <section id="panel">
+        <nav>
+          <button data-tab="home">Арена</button
+          ><button data-tab="inventory">Коллекция</button
+          ><button data-tab="settings">Настройки</button>
+        </nav>
+        <section id="home">
+          <small>КАРТА / 01</small>
+          <h1>DUST<br /><em>ARENA</em></h1>
+          <p>Выбери нож и попробуй его в движении.</p>
+          <button id="play" class="primary">На арену <b>↗</b></button>
+          <p id="hint"></p>
+        </section>
+        <section id="inventory" hidden>
+          <h2>Коллекция</h2>
+          <div id="cards"></div>
+        </section>
+        <section id="settings" hidden>
+          <h2>Настройки</h2>
+          <div id="options"></div>
+          <details>
+            <summary>Назначение клавиш</summary>
+            <div id="bindings"></div>
+          </details>
+        </section>
+        <button id="resume" class="primary" hidden>
+          Вернуться на арену ↗
+        </button>
+      </section>
+    </div>
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>
