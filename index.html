@@ -4,7 +4,7 @@
 *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#101722;color:#fff;font-family:Inter,system-ui,Arial,sans-serif}canvas{display:block;touch-action:none}#hud{position:fixed;inset:0;z-index:2;pointer-events:none}#brand{position:absolute;left:25px;top:22px;font-weight:900;letter-spacing:.15em;font-size:16px}#brand b{color:#f5c572}#subtitle{font-size:10px;color:#d1ceca;letter-spacing:.2em;font-weight:400;margin-top:6px}#performance{position:absolute;top:23px;right:22px;color:#ddd;font:12px monospace}#performance b{color:#f8d69b}.dot{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:#fff;width:4px;height:4px;border-radius:50%;box-shadow:0 0 0 2px #0007,0 0 9px #fffb}.stats{position:absolute;left:26px;bottom:23px}.stats label{font-size:10px;letter-spacing:.2em;color:#cfcac6}.stats strong{font-size:45px;line-height:1.12;letter-spacing:-.07em;font-variant-numeric:tabular-nums}.stats small{font-size:13px;color:#b5b5b5}.stats .extra{font-size:11px;line-height:1.8;color:#b8bec6}.timer{position:absolute;bottom:24px;right:25px;text-align:right}.timer strong{font:700 25px monospace}.timer div{color:#aaa;font-size:10px;letter-spacing:.14em}.mini{position:absolute;top:62px;right:22px;border:1px solid #ffffff37;border-radius:9px;overflow:hidden;background:#141a20aa;width:139px;height:139px}.mini canvas{width:100%;height:100%}.cover{position:fixed;inset:0;display:grid;place-items:center;z-index:10;background:linear-gradient(125deg,#0b111de8,#141e29d7);backdrop-filter:blur(14px);transition:opacity .25s}.cover.hide{opacity:0;pointer-events:none}.panel{border:1px solid #ffffff26;background:linear-gradient(135deg,#25313cdf,#141e2df0);border-radius:20px;padding:38px;box-shadow:0 25px 90px #000a;width:min(488px,calc(100vw - 30px))}.eyebrow{color:#f5c572;font-size:10px;letter-spacing:.24em;font-weight:900}.panel h1{font-size:clamp(40px,7vw,65px);letter-spacing:-.07em;line-height:1;margin:18px 0}.panel h1 em{font-style:normal;color:#f5c572}.panel p{color:#b5c0ca;font-size:13px;line-height:1.7}.keys{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin:22px 0}.keys div{font-size:11px;color:#cbd0d6}.keys kbd{padding:5px 7px;background:#ffffff17;color:#fff;font:700 11px monospace;border:1px solid #ffffff30;border-radius:5px;margin-right:5px}button{cursor:pointer;border:0;border-radius:9px;background:#f5c572;color:#161921;font-weight:900;letter-spacing:.1em;padding:15px;width:100%;font-size:13px}button:hover{background:#ffe0a0}.small{font-size:10px;text-align:center;color:#8994a4;margin-top:15px}#touch{position:fixed;inset:0;z-index:5;pointer-events:none;display:none}#stick{position:absolute;bottom:30px;left:25px;width:120px;height:120px;border:2px solid #fff4;border-radius:50%;background:#16233455;pointer-events:auto;touch-action:none}#nub{position:absolute;left:42px;top:42px;width:32px;height:32px;background:#fffa;border-radius:50%}#touch button{position:absolute;right:22px;width:72px;height:72px;border:1px solid #ffffff5a;color:#fff;background:#1c2b3dbb;border-radius:50%;font-size:10px;pointer-events:auto;touch-action:none}#jump{bottom:25px}#inspect{bottom:111px;right:30px!important;width:58px!important;height:58px!important}#duck{bottom:185px;right:38px!important;width:49px!important;height:49px!important}@media(pointer:coarse){#touch{display:block}.stats{bottom:161px}.stats strong{font-size:31px}.timer{bottom:12px}.mini{width:106px;height:106px;right:13px}.panel{padding:26px}}
 #knifeSelector{position:fixed;z-index:4;bottom:22px;left:50%;transform:translateX(-50%);display:flex;gap:5px;padding:7px;background:#101b27d9;border:1px solid #ffffff40;border-radius:12px;max-width:95vw;overflow-x:auto}#knifeSelector button{width:auto;min-width:66px;padding:9px;background:#ffffff12;color:#fff;font-size:10px;letter-spacing:0;white-space:nowrap}#knifeSelector button.selected{background:#f5c572;color:#14191e}#knifeName{position:fixed;bottom:89px;right:25px;font-weight:800;pointer-events:none}#knifeName small{display:block;font-size:10px;color:#f5c572}@media(pointer:coarse){#knifeSelector{bottom:5px;left:5px;right:5px;transform:none;max-width:none}#knifeName{bottom:260px}} </style></head><body>
 <div id="hud"><div id="brand"><b>TL</b> KNIFE 3D<div id="subtitle">DUST ARENA // BHOP FREE RUN</div></div><div id="performance">FPS <b id="fps">60</b>　BEST <b id="best">0</b></div><div class="dot"></div><div class="mini"><canvas id="radar" width="200" height="200"></canvas></div><div class="stats"><label>VELOCITY</label><br><strong id="speed">000</strong><small> u/s</small><div class="extra" id="state">GROUND • READY</div></div><div class="timer"><strong id="timer">00:00.00</strong><div>RUN TIME</div></div></div>
-<div id="knifeName">BUTTERFLY<small>1-8 SELECT • F INSPECT • Q FLIP</small></div><div id="knifeSelector"></div><div id="touch"><div id="stick"><div id="nub"></div></div><button id="jump">JUMP</button><button id="run">RUN</button><button id="trick">FLIP</button><button id="inspect">INSPECT</button><button id="duck">DUCK</button></div>
+<div id="knifeName">BUTTERFLY<small>1-8 SELECT • F INSPECT • Q TRICKS</small></div><div id="knifeSelector"></div><div id="touch"><div id="stick"><div id="nub"></div></div><button id="jump">JUMP</button><button id="run">RUN</button><button id="trick">FLIP</button><button id="inspect">INSPECT</button><button id="duck">DUCK</button></div>
 <div class="cover" id="cover"><div class="panel"><div class="eyebrow">TOOLGOOL PRESENTS // BROWSER FPS</div><h1>TL KNIFE<br><em>3D.</em></h1><p>Dust-inspired 3D арена с управлением от первого лица, прыжками Bunny Hop, Air Strafing, осмотром ножа, скоростью и таймером. Исследуй карту без ограничений.</p><div class="keys"><div><kbd>WASD</kbd> Движение</div><div><kbd>МЫШЬ</kbd> Обзор</div><div><kbd>SPACE</kbd> BHOP</div><div><kbd>F / Q</kbd> Трюки</div><div><kbd>CTRL</kbd> Присесть</div><div><kbd>SHIFT</kbd> Шаг</div><div><kbd>1-8</kbd> Ножи</div><div><kbd>ESC</kbd> Пауза</div></div><button id="play">ВОЙТИ НА КАРТУ</button><div class="small">WEBGL 3D • KEYBOARD + TOUCH • TL 2026</div></div></div>
 <script type="module">
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.module.js';
@@ -45,8 +45,8 @@ let butterflyHandles=[];
 function butterfly(g){curvedBlade(g,[[.08,-.16],[.76,-.16],[.97,-.04],[.74,.05],[.08,.035]]);bar(g,.4,-.157,.05,.55,.013,.015,edge);for(let side of [-1,1]){const pivot=new THREE.Group();pivot.position.set(.06,-.07,side*.07);g.add(pivot);bar(pivot,-.27,-.03,0,.59,.065,.065,side===1?black:grip);for(let i=0;i<3;i++)bar(pivot,-.44+i*.16,-.03,.04,.06,.067,.012,brass);add(pivot,new THREE.SphereGeometry(.052,10,8),brass);butterflyHandles.push({pivot,side})}}
 function dagger(g){bar(g,-.19,-.12,0,.5,.13,.14,black);bar(g,.07,-.12,0,.08,.3,.19,brass);curvedBlade(g,[[.1,-.14],[.75,-.25],[1.07,-.12],[.75,.01],[.1,-.1]]);bar(g,.48,-.24,.04,.45,.015,.02,edge)}
 const knifeTypes=[['butterfly','BUTTERFLY'],['karambit','KARAMBIT'],['m9','M9 BAYONET'],['bayonet','BAYONET'],['tanto','TANTO'],['bowie','BOWIE'],['huntsman','HUNTSMAN'],['dagger','SHADOW DAGGER']];
-let knifeIndex=0,flip=0,flipStyle=0,sprinting=false;const handSkin=material('#b58b6d',.9),glove=material('#24282c',.85),cuff=material('#3b414b');const arms=new THREE.Group();camera.add(arms);function arm(x,y,z,angle){const a=new THREE.Group();a.position.set(x,y,z);a.rotation.z=angle;arms.add(a);add(a,new THREE.CylinderGeometry(.105,.145,.48,12),cuff,0,-.26,0);add(a,new THREE.CylinderGeometry(.1,.11,.26,12),glove,0,.06,0);add(a,new THREE.SphereGeometry(.12,12,10),glove,0,.17,0);return a}const rightArm=arm(.49,-.53,-.72,-.55),leftArm=arm(-.38,-.69,-.76,.58);
-function selectKnife(i){knifeIndex=(i+knifeTypes.length)%knifeTypes.length;while(knife.children.length)knife.remove(knife.children[0]);butterflyHandles=[];const type=knifeTypes[knifeIndex][0];if(type==='butterfly')butterfly(knife);else if(type==='karambit')karambit(knife);else if(type==='dagger')dagger(knife);else standard(knife,type);flip=0;flipStyle=0;el('knifeName').innerHTML=knifeTypes[knifeIndex][1]+'<small>1-8 SELECT • F INSPECT • Q FLIP</small>';document.querySelectorAll('#knifeSelector button').forEach((b,j)=>b.classList.toggle('selected',j===knifeIndex))}
+let knifeIndex=0,flip=0,flipStyle=0,sprinting=false,combo=0,comboTime=0,knifeSpring=0,knifeSpringV=0;const smooth=(a,b,t)=>{t=Math.max(0,Math.min(1,(t-a)/(b-a)));return t*t*(3-2*t)},pulse=(a,b,t)=>Math.sin(Math.PI*smooth(a,b,t)),TAU=Math.PI*2;const handSkin=material('#b58b6d',.9),glove=material('#24282c',.85),cuff=material('#3b414b');const arms=new THREE.Group();camera.add(arms);function arm(x,y,z,angle){const a=new THREE.Group();a.position.set(x,y,z);a.rotation.z=angle;arms.add(a);add(a,new THREE.CylinderGeometry(.105,.145,.48,12),cuff,0,-.26,0);add(a,new THREE.CylinderGeometry(.1,.11,.26,12),glove,0,.06,0);add(a,new THREE.SphereGeometry(.12,12,10),glove,0,.17,0);return a}const rightArm=arm(.49,-.53,-.72,-.55),leftArm=arm(-.38,-.69,-.76,.58);
+function selectKnife(i){knifeIndex=(i+knifeTypes.length)%knifeTypes.length;while(knife.children.length)knife.remove(knife.children[0]);butterflyHandles=[];const type=knifeTypes[knifeIndex][0];if(type==='butterfly')butterfly(knife);else if(type==='karambit')karambit(knife);else if(type==='dagger')dagger(knife);else standard(knife,type);flip=0;flipStyle=0;knifeSpring=0;knifeSpringV=0;el('knifeName').innerHTML=knifeTypes[knifeIndex][1]+'<small>1-8 SELECT • F INSPECT • Q FLIP</small>';document.querySelectorAll('#knifeSelector button').forEach((b,j)=>b.classList.toggle('selected',j===knifeIndex))}
 knifeTypes.forEach(([id,name],i)=>{const b=document.createElement('button');b.textContent=(i+1)+' '+name;b.onclick=()=>selectKnife(i);el('knifeSelector').appendChild(b)});selectKnife(0);
 const pos=new THREE.Vector3(0,1.78,29),vel=new THREE.Vector3(),keys=new Set();let yaw=0,pitch=0,grounded=true,running=false,best=0,start=0,elapsed=0,inspect=0,strike=0,animation=0,joyX=0,joyY=0,duck=false,jumpTap=false,lookPointer=null,lastX=0,lastY=0;
 const cap=(v,min,max)=>Math.max(min,Math.min(max,v)),R=.42;
@@ -69,7 +69,7 @@ function begin(){running=true;el('cover').classList.add('hide');start=performanc
 function pause(){running=false;el('cover').classList.remove('hide')}
 el('play').onclick=begin;document.addEventListener('pointerlockchange',()=>{if(!mobile&&running&&document.pointerLockElement!==renderer.domElement)pause()});
 renderer.domElement.addEventListener('click',()=>{if(running&&!mobile&&document.pointerLockElement!==renderer.domElement)renderer.domElement.requestPointerLock?.()});
-document.addEventListener('keydown',e=>{if(e.code==='Space')e.preventDefault();keys.add(e.code);if(e.code==='KeyF'&&!e.repeat)inspect=1.7;if(e.code==='KeyQ'&&!e.repeat){flip=1.5;flipStyle=(flipStyle+1)%3;}if(/^Digit[1-8]$/.test(e.code)&&!e.repeat)selectKnife(Number(e.code.slice(-1))-1);if(e.code==='KeyR')reset();if(e.code==='Escape'&&mobile)pause()});
+document.addEventListener('keydown',e=>{if(e.code==='Space')e.preventDefault();keys.add(e.code);if(e.code==='KeyF'&&!e.repeat)inspect=1.7;if(e.code==='KeyQ'&&!e.repeat){flip=1.9;flipStyle=(flipStyle+1)%3;combo++;comboTime=2.5;}if(/^Digit[1-8]$/.test(e.code)&&!e.repeat)selectKnife(Number(e.code.slice(-1))-1);if(e.code==='KeyR')reset();if(e.code==='Escape'&&mobile)pause()});
 document.addEventListener('keyup',e=>keys.delete(e.code));document.addEventListener('mousemove',e=>{if(!running||document.pointerLockElement!==renderer.domElement)return;yaw-=e.movementX*.0022;pitch=cap(pitch-e.movementY*.0022,-1.43,1.43)});
 renderer.domElement.addEventListener('mousedown',()=>{if(running)strike=1});renderer.domElement.addEventListener('contextmenu',e=>e.preventDefault());
 if(mobile){
@@ -83,43 +83,69 @@ renderer.domElement.addEventListener('pointermove',e=>{if(e.pointerId!==lookPoin
 renderer.domElement.addEventListener('pointerup',()=>lookPointer=null);
 el('jump').addEventListener('pointerdown',()=>{jumpTap=true;keys.add('Space')});
 for(const t of ['pointerup','pointercancel'])el('jump').addEventListener(t,()=>keys.delete('Space'));
-el('inspect').addEventListener('pointerdown',()=>{inspect=1.7});el('trick').addEventListener('pointerdown',()=>{flip=1.5;flipStyle=(flipStyle+1)%3});el('run').addEventListener('pointerdown',()=>{sprinting=!sprinting;el('run').style.background=sprinting?'#f5c572':'#1c2b3dbb';el('run').style.color=sprinting?'#101820':'white'});
+el('inspect').addEventListener('pointerdown',()=>{inspect=1.7});el('trick').addEventListener('pointerdown',()=>{flip=1.9;flipStyle=(flipStyle+1)%3;combo++;comboTime=2.5});el('run').addEventListener('pointerdown',()=>{sprinting=!sprinting;el('run').style.background=sprinting?'#f5c572':'#1c2b3dbb';el('run').style.color=sprinting?'#101820':'white'});
 el('duck').addEventListener('pointerdown',()=>duck=true);
 for(const t of ['pointerup','pointercancel'])el('duck').addEventListener(t,()=>duck=false)}
 const ctx=el('radar').getContext('2d');function radar(){ctx.clearRect(0,0,200,200);ctx.fillStyle='#17212c';ctx.fillRect(0,0,200,200);ctx.save();ctx.translate(100,100);ctx.rotate(-yaw);ctx.translate(-pos.x*.58,-pos.z*.58);ctx.strokeStyle='#eee8d477';ctx.strokeRect(-54,-54,108,108);ctx.fillStyle='#cbb595aa';for(const s of solids)if(s.h>6)ctx.fillRect((s.x-s.w/2)*.58,(s.z-s.d/2)*.58,s.w*.58,s.d*.58);ctx.fillStyle='#d88355';for(const p of [[-66,9],[55,38]]){ctx.beginPath();ctx.arc(p[0]*.58,p[1]*.58,4,0,Math.PI*2);ctx.fill()}ctx.restore();ctx.fillStyle='#ffcf77';ctx.beginPath();ctx.moveTo(100,91);ctx.lineTo(94,108);ctx.lineTo(106,108);ctx.fill()}
 let prev=performance.now(),frames=0,fpsT=0,frame=0;function loop(now){requestAnimationFrame(loop);const dt=Math.min((now-prev)/1000,.034);prev=now;if(running){let n=Math.max(1,Math.ceil(dt/.012)),hs=0;for(let i=0;i<n;i++)hs=physics(dt/n);elapsed=(now-start)/1000;camera.position.copy(pos);animation+=dt*Math.max(hs,1)*.5;camera.position.y+=grounded?Math.sin(animation*11)*Math.min(.05,hs*.008):0;camera.rotation.set(pitch,yaw,0);
 const sway=grounded?Math.sin(animation*11)*Math.min(.06,hs*.01):0;inspect=Math.max(0,inspect-dt);strike=Math.max(0,strike-dt*4);const inspection=inspect>0?Math.sin((1-inspect/1.7)*Math.PI):0,slash=Math.sin(strike*Math.PI);
 
-flip=Math.max(0,flip-dt);
-const t=flip>0?1-flip/1.5:0,ease=flip>0?Math.sin(t*Math.PI):0;
-const walk=grounded?Math.sin(animation*11)*Math.min(.035,hs*.008):0;
-const bob=grounded?Math.abs(Math.sin(animation*11))*.02:0;
-const viewScale=mobile?.87:1;
-knife.scale.setScalar(viewScale);
-knife.position.set(.33-.15*inspection,-.33+walk+bob+.10*inspection-.12*slash,-.76-.15*inspection+.08*slash);
-knife.rotation.set(.08+inspection*.35+slash*.5,-.27+inspection*1.2-slash,-.3+inspection*.5-slash*.55);
-arms.position.set(0,walk*.5,0);
-rightArm.position.set(.49,-.53+walk,-.72);
-rightArm.rotation.set(-.25+inspection*.3,0,-.55+slash*.25);
-leftArm.position.set(-.38,-.69-walk,-.76);
-leftArm.rotation.set(-.2,0,.58);
+
+flip=Math.max(0,flip-dt);comboTime=Math.max(0,comboTime-dt);if(!comboTime)combo=0;
+const t=flip>0?1-flip/1.9:0,active=flip>0,phase=Math.sin(Math.PI*t);
+const movement=grounded?Math.sin(animation*11)*Math.min(.026,hs*.006):0;
+const idle=Math.sin(now*.0018)*.009;
+const targetSpring=active?phase*.2:0;
+knifeSpringV+=(targetSpring-knifeSpring)*dt*55;knifeSpringV*=Math.exp(-dt*13);knifeSpring+=knifeSpringV*dt;
+knife.scale.setScalar(mobile?.82:.92);
+knife.position.set(.28-.10*inspection,-.28+movement+idle+.09*inspection-.10*slash,-.71-.13*inspection+.05*slash);
+knife.rotation.set(.08+inspection*.25+slash*.4,-.2+inspection*.9-slash,-.16+inspection*.38-slash*.55);
+arms.position.set(0,movement*.6+idle*.4,0);
+rightArm.position.set(.47,-.52+movement,-.73);
+rightArm.rotation.set(-.25,0,-.5+slash*.15);
+leftArm.position.set(-.4,-.73-movement,-.77);
+leftArm.rotation.set(-.2,0,.52);
+if(active){
+const style=flipStyle%3;
+const burst1=pulse(.03,.43,t),burst2=pulse(.39,.82,t),finish=smooth(.72,1,t);
 if(knifeIndex===0){
-const swing=flip>0?Math.sin(t*Math.PI*4)*1.7:0;
-for(const {pivot,side} of butterflyHandles){pivot.rotation.z=side*(.18+swing);pivot.rotation.y=side*(flip>0?Math.sin(t*Math.PI*2)*.95:0)}
-if(flip>0){knife.rotation.z+=Math.sin(t*Math.PI*2)*1.2;knife.rotation.y+=ease*.55;rightArm.rotation.z-=ease*.5}
-}else if(knifeIndex===1){
-if(flip>0){knife.rotation.z+=t*Math.PI*4;knife.rotation.x+=ease*.65;knife.position.x-=ease*.15;rightArm.rotation.z-=ease*.45}
-}else if(knifeIndex===7){
-if(flip>0){knife.rotation.y+=t*Math.PI*2;knife.rotation.z+=ease*.75;leftArm.rotation.z-=ease*.5}
-}else if(flip>0){
-const variation=knifeIndex%3;
-knife.rotation.z+=(variation===0?t*Math.PI*2:variation===1?ease*1.4:-ease*.9);
-knife.rotation.y+=(variation===2?t*Math.PI*2:ease*.85);
-knife.rotation.x+=ease*(variation===1?-.65:.35);
-knife.position.y+=ease*.13;
-rightArm.rotation.z-=ease*.3;
+const turns=style===0?2:style===1?3:4;
+knife.rotation.z+=TAU*turns*smooth(.05,.83,t)*(1-finish)+TAU*turns*finish;
+knife.rotation.y+=.45*burst1-.7*burst2;
+knife.rotation.x+=.32*burst2;
+knife.position.y+=.17*burst1-.08*burst2;
+knife.position.x-=.16*burst2;
+for(const {pivot,side} of butterflyHandles){
+pivot.rotation.z=side*(.18+Math.sin(TAU*(style===2?4:3)*smooth(.02,.9,t))*1.45*(1-finish));
+pivot.rotation.y=side*(.25*burst1+.8*burst2);
 }
-if(inspect>0){knife.rotation.y+=inspection*.6;knife.position.x-=inspection*.12;leftArm.rotation.z-=inspection*.35}
+rightArm.rotation.z-=.48*burst1+.25*burst2;
+leftArm.rotation.z-=.22*burst2;
+}else if(knifeIndex===1){
+knife.rotation.z+=TAU*(style===0?2:style===1?3:1)*smooth(.08,.91,t);
+knife.rotation.y+=style===2?TAU*smooth(.15,.8,t):.5*burst1;
+knife.rotation.x+=.65*burst1-.3*burst2;
+knife.position.x-=.22*burst1;
+knife.position.y+=.2*burst2;
+rightArm.rotation.z-=.45*burst1;
+}else if(knifeIndex===7){
+knife.rotation.y+=TAU*(style===1?2:1)*smooth(.05,.9,t);
+knife.rotation.z+=.9*burst1-.6*burst2;
+knife.position.x-=.2*burst1;
+knife.position.y+=.16*burst2;
+leftArm.rotation.z-=.55*burst1;
+}else{
+const variation=(knifeIndex+style)%4;
+knife.rotation.z+=(variation===0?TAU*2:variation===1?TAU:variation===2?.85:-.9)*smooth(.08,.89,t);
+knife.rotation.y+=(variation===2?TAU:variation===3?TAU*2:.75)*smooth(.12,.88,t);
+knife.rotation.x+=.5*burst1-.4*burst2;
+knife.position.y+=.18*burst1;
+knife.position.x-=.16*burst2;
+rightArm.rotation.z-=.32*burst1;
+}
+}
+knife.position.y+=knifeSpring*.13;
+if(inspect>0){knife.rotation.y+=inspection*.75;knife.rotation.x+=inspection*.22;knife.position.x-=inspection*.12;leftArm.rotation.z-=inspection*.25}
 el('timer').textContent=String(Math.floor(elapsed/60)).padStart(2,'0')+':'+String(Math.floor(elapsed%60)).padStart(2,'0')+'.'+String(Math.floor(elapsed*100)%100).padStart(2,'0');if((frame++%5)===0)radar()}renderer.render(scene,camera);frames++;fpsT+=dt;if(fpsT>.5){el('fps').textContent=Math.round(frames/fpsT);frames=0;fpsT=0}}requestAnimationFrame(loop);
 window.addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
 </script></body></html>
